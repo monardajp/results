@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <meta charset="utf-8">
+  <title>参議院議員 山田太郎 実績2021（2020.7-2021.7）</title>
+  <style type="text/css">
+      .node-label {
+          word-wrap: normal;
+          white-space: normal;
+      }
+  </style>
+</head>
+ 
+<body>
+  <h1>参議院議員 山田太郎 実績2021</h1>
+  <p>2020.07 - 2021.07</p>
+  <svg width="1200" height="600"></svg>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script>
+  // 1. 描画用のデータ準備
+  let width = document.querySelector("svg").clientWidth;
+  let height = document.querySelector("svg").clientHeight;
+  let data =
+  {
+    "name" : "山田太郎2年目",
+    "children" : [
+      {
+        "name" : "表現の自由",
+        "children": [
+          {
+            "name": "消費税総額表示義務化",
+            "value": 5
+          },
+          {
+            "name": "ゲーム規制条例",
+            "value": 20
+          },
+          {
+            "name": "ゲーム・ネット・スマホ規制",
+            "value": 20
+          },
+          {
+            "name": "著作権法改正",
+            "value": 20
+          },
+          {
+            "name": "海賊版対策",
+            "value": 10
+          },
+          {
+            "name": "プラットフォーマー規制",
+            "children": [
+              {
+                "name": "クレジットカード会社",
+                "value": 10
+              }
+            ]
+          },
+          {
+            "name": "誹謗中傷対策",
+            "children": [
+              {
+                "name": "匿名表現の自由",
+                "value": 10
+              }
+            ]
+          },
+        ]
+      },
+      {
+        "name": "デジタル化",
+        "children": [
+          {
+            "name": "デジタル庁創設",
+            "value": 20
+          },
+          {
+            "name": "機能",
+            "children" : [
+              {
+                "name": "マイナンバー",
+                "value": 20
+              },
+              {
+                "name": "教育",
+                "value": 5
+              },
+              {
+                "name": "医療",
+                "value": 5
+              },
+              {
+                "name": "防災",
+                "value": 10
+              },
+            ]
+          },
+          {
+            "name": "国会図書館デジタル化",
+            "value": 10
+          }
+        ]
+      },
+      {
+        "name": "こども庁",
+        "children": [
+          {
+            "name": "こども庁創設",
+            "children": [
+              {
+                "name": "アンケート",
+                "value": 20
+              },
+              {
+                "name": "勉強会",
+                "value": 20
+              },
+              {
+                "name": "提言書",
+                "value": 20
+              }
+            ]
+          },
+          {
+            "name": "児童手当特例給付廃止反対",
+            "value": 10
+          }
+        ]
+      },
+      {
+        "name": "コロナ対策",
+        "children": [
+          {
+            "name": "緊急小口資金延長",
+            "value": 10
+          },
+          {
+            "name": "同人誌即売会支援策",
+            "value": 10
+          },
+          {
+            "name": "コロナ下における国民の声アンケート",
+            "value": 5
+          }
+        ]
+      }
+    ]
+  }
+ 
+  // 2. 描画用のデータ変換
+  root = d3.hierarchy(data);
+  root
+    .sum(function(d) { return d.value; })
+    .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+ 
+  let treemap = d3.treemap()
+    .size([width, height])
+    .padding(1)
+    .round(true);
+ 
+  treemap(root);
+ 
+  // 3. svg要素の配置
+  let g = d3.select("svg")
+    .selectAll(".node")
+    .data(root.leaves())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", function(d) { return "translate(" + d.x0 + "," + (d.y0) + ")"; });
+ 
+  g.append("rect")
+    .style("width", function(d) { return d.x1 - d.x0; })
+    .style("height", function(d) { return d.y1 - d.y0; })
+    .style("fill", function(d) {
+      while(d.depth > 1) d = d.parent;
+      return d3.schemeCategory10[parseInt(d.value % 11)];
+    })
+    .style("opacity", 0.6)
+ 
+  g.append("text")
+    .attr("text-anchor", "start")
+    .attr("x", 5)
+    .attr("dy", 30)
+    .attr("font-size", "80%")
+    .attr("class", "node-label")
+    .text(function(d) { 
+        title = d.data.name + " : " + d.value;
+        let categoryTitles = "";
+        while (d.depth > 2) {
+            d = d.parent;
+            if (typeof d !== "undefined") {
+                categoryTitles = d.data.name + '/' + categoryTitles;
+            }
+        }
+        return categoryTitles + title; 
+    });
+  </script>
+</body>
+ 
+</html>
