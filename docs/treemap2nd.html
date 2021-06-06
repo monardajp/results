@@ -185,17 +185,27 @@
     .attr("dy", 30)
     .attr("font-size", "80%")
     .attr("class", "node-label")
-    .text(function(d) { 
+    .html(function(d) { 
         title = d.data.name + " : " + d.value;
-        let categoryTitles = "";
+        let lines = [];
         while (d.depth > 2) {
             d = d.parent;
             if (typeof d !== "undefined") {
-                categoryTitles = d.data.name + '/' + categoryTitles;
+                lines.push('[' + d.data.name + ']');
             }
         }
-        return categoryTitles + title; 
+        lines.push(title)
+        return linebreak(lines);
     });
+  
+  function linebreak(array)
+  {
+    let string = "";
+    array.forEach((t, i) => {
+      string += `<tspan y="${i}em" x="0em">${t}</tspan>`;      
+    });
+    return string;
+  }
   </script>
 </body>
  
